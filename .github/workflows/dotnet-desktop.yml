@@ -20,6 +20,7 @@ jobs:
     - name: PackToZip
       shell: pwsh
       run: |
+        mkdir ./publish/zips
         Compress-Archive -Path ./publish/win-x64 -DestinationPath ./publish/zips/CommonTools-win-x64.zip
         Compress-Archive -Path ./publish/win-x86 -DestinationPath ./publish/zips/CommonTools-win-x86.zip
     - name: Create GitHub release
