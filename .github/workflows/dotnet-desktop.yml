@@ -1,0 +1,33 @@
+name: Release
+on:
+  push:
+    branches: [ master ]
+jobs:
+  build:
+    name: Release
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Build
+      shell: pwsh
+      run: |
+        dotnet publish -c Release -r win-x64 -o ./publish/win-x64 --self-contained true
+        dotnet publish -c Release -r win-x86 -o ./publish/win-x86 --self-contained true
+    - name: PackToZip
+      shell: pwsh
+      run: |
+        Compress-Archive -Path ./publish/win-x64 -DestinationPath ./publish/zips/CommonTools-win-x64.zip
+        Compress-Archive -Path ./publish/win-x86 -DestinationPath ./publish/zips/CommonTools-win-x86.zip
+    - name: Create GitHub release
+      uses: marvinpinto/action-automatic-releases@latest
+      with:
+        repo_token: "${{ secrets.GH_TOKEN }}"
+        files: |
+          ./publish/zips/*
+        automatic_release_tag: ${{ steps.get_version.outputs.VERSION }}
+        title: ${{ steps.get_version.outputs.VERSION }}
+        prerelease: true
