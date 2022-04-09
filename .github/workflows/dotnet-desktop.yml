@@ -1,8 +1,7 @@
 name: Release
 on:
   push:
-    branches:
-      [master]
+    branches: [ master ]
 jobs:
   build:
     name: Release
@@ -34,6 +33,6 @@ jobs:
         repo_token: "${{ secrets.GH_TOKEN }}"
         files: |
           ./publish/zips/*
-        automatic_release_tag: ${{ github.ref }}
-        title: ${{ github.ref }}
+        automatic_release_tag: v0.2.0
+        title: v0.2.0
         prerelease: true
