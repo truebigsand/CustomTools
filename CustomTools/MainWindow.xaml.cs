@@ -32,5 +32,12 @@ namespace CustomTools
             schoolDataWindow.Owner = this;
             schoolDataWindow.ShowDialog();
         }
+
+        private void Kouyu100Button_Click(object sender, RoutedEventArgs e)
+        {
+            Kouyu100AutoFinishWindow kouyu100AutoFinishWindow = new Kouyu100AutoFinishWindow();
+            kouyu100AutoFinishWindow.Owner = this;
+            kouyu100AutoFinishWindow.ShowDialog();
+        }
     }
 }

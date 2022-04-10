@@ -1,0 +1,18 @@
+﻿<Window x:Class="CustomTools.Kouyu100AutoFinishInnerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CustomTools"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Title="Kouyu100AutoFinishInnerWindow" Height="450" Width="800">
+    <Grid>
+        <TextBlock x:Name="HomeworkTitleTextBlock" Margin="10,10,0,0" TextWrapping="Wrap" Text="标题: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBlock x:Name="ExamIdTextBlock" HorizontalAlignment="Left" Margin="10,30,0,0" TextWrapping="Wrap" Text="ExamId: " VerticalAlignment="Top"/>
+        <TextBlock x:Name="HomeworkIdTextBlock" HorizontalAlignment="Left" Margin="10,50,0,0" TextWrapping="Wrap" Text="HwId: " VerticalAlignment="Top"/>
+        <Button x:Name="StartButton" Content="一键开摆" HorizontalAlignment="Center" Margin="0,27,0,0" VerticalAlignment="Top" Click="StartButton_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="269,10,0,0" TextWrapping="Wrap" Text="摆烂进度: " VerticalAlignment="Top"/>
+        <ProgressBar x:Name="UploadProgressBar" HorizontalAlignment="Left" Height="12" Margin="328,10,0,0" VerticalAlignment="Top" Width="200"/>
+    </Grid>
+</Window>
