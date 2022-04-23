@@ -27,12 +27,16 @@ jobs:
         Compress-Archive -Path ./publish/win-x86-independent -DestinationPath ./publish/zips/CommonTools-win-x86-independent.zip
         Compress-Archive -Path ./publish/win-x64-dependent -DestinationPath ./publish/zips/CommonTools-win-x64-dependent.zip
         Compress-Archive -Path ./publish/win-x86-dependent -DestinationPath ./publish/zips/CommonTools-win-x86-dependent.zip
+    - name: GetReleaseVersion
+      shell: pwsh
+      run: |
+        ./Get-Version.ps1
     - name: Create GitHub release
       uses: marvinpinto/action-automatic-releases@latest
       with:
         repo_token: "${{ secrets.GH_TOKEN }}"
         files: |
           ./publish/zips/*
-        automatic_release_tag: v0.2.0
-        title: v0.2.0
-        prerelease: true
+        automatic_release_tag: ${{ env.ReleaseVersion }}
+        title: ${{ env.ReleaseVersion }}
+        prerelease: false

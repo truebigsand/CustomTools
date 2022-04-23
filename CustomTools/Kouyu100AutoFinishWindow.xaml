@@ -9,8 +9,8 @@
         Title="Kouyu100" Height="450" Width="800">
     <Grid>
         <TextBlock HorizontalAlignment="Left" Margin="10,18,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="authToken(从网页Cookies中取得): "/>
-        <TextBox x:Name="AuthTokenTextBox" Text="njjlzxhx.56928bf4-3837-4a07-8502-02e5dc2cd565_0920" HorizontalAlignment="Left" Margin="208,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="440"/>
-        <Button x:Name="GetHomeworkListButton" Content="获取作业列表" Margin="653,10,10,0" VerticalAlignment="Top" Click="GetHomeworkListButton_Click" Background="#FF2196F3"/>
+        <TextBox x:Name="AuthTokenTextBox" HorizontalAlignment="Left" Margin="208,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358" Cursor="Arrow"/>
+        <Button x:Name="GetHomeworkListButton" Content="获取作业列表" Margin="664,10,5,0" VerticalAlignment="Top" Click="GetHomeworkListButton_Click" Background="#FF2196F3"/>
         <ListBox x:Name="HomeworkListBox" Margin="10,47,10,10" HorizontalContentAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -41,5 +41,6 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
+        <Button x:Name="InnerWebbrowserLoginButton" Content="内置登录" HorizontalAlignment="Left" Margin="571,10,0,0" VerticalAlignment="Top" Click="InnerWebbrowserLoginButton_Click" Cursor="Hand"/>
     </Grid>
 </Window>

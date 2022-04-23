@@ -17,6 +17,7 @@ namespace CustomTools
     public partial class Kouyu100AutoFinishInnerWindow : Window
     {
         private readonly Homework currentHomework;
+        public bool PrepareSuccessfully = false;
         string cookieString;
         int ScoreId;
         public Kouyu100AutoFinishInnerWindow(Homework currentHomework, string cookieString)
@@ -30,11 +31,19 @@ namespace CustomTools
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 #pragma warning disable CS8602 // 解引用可能出现空引用。
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
-            ScoreId = (int)((
-                (JObject)JsonConvert.DeserializeObject(
-                    Kouyu100HttpGet($"http://028.kouyu100.com/njjlzxhx/getTimeAndAnswer.action?examId={currentHomework.ExamId}&homeWork.id={currentHomework.HomeworkId}")
-                )
-            )["listenExamScore"]["id"]);
+            try
+            {
+                ScoreId = (int)((
+                    (JObject)JsonConvert.DeserializeObject(
+                        Kouyu100HttpGet($"http://028.kouyu100.com/njjlzxhx/getTimeAndAnswer.action?examId={currentHomework.ExamId}&homeWork.id={currentHomework.HomeworkId}")
+                    )
+                )["listenExamScore"]["id"]);
+                PrepareSuccessfully = true;
+            }
+            catch(ArgumentException ex)
+            {
+                MessageBox.Show("暂不支持的作业类型! ");
+            }
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
@@ -48,6 +57,26 @@ namespace CustomTools
             request.Headers.Add("Cookie", cookieString);
             //Receive
             HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
+            Stream responseStream = httpWebResponse.GetResponseStream();
+            StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
+            string resultString = streamReader.ReadToEnd();
+            //Clean up
+            streamReader.Close();
+            responseStream.Close();
+            return resultString;
+        }
+        public string Kouyu100HttpGetWithoutCookie(string Url)
+        {
+            //Create
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url);
+            request.Method = "GET";
+            request.AllowAutoRedirect = false;
+            //Receive
+            HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse();
+            if (httpWebResponse.StatusCode == HttpStatusCode.Redirect || httpWebResponse.StatusCode == HttpStatusCode.MovedPermanently)
+            {
+                return Kouyu100HttpGetWithoutCookie(httpWebResponse.Headers["Location"]);
+            }
             Stream responseStream = httpWebResponse.GetResponseStream();
             StreamReader streamReader = new StreamReader(responseStream, Encoding.UTF8);
             string resultString = streamReader.ReadToEnd();
@@ -96,9 +125,7 @@ namespace CustomTools
                     query.Append(key).Append('=').Append(value).Append('&');
                 }
             }
-            string content = query.ToString().Substring(0, query.Length - 1);
-
-            return content;
+            return query.ToString().Substring(0, query.Length - 1);
         }
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
@@ -139,6 +166,9 @@ namespace CustomTools
                     else:
                         print('failed!')
                  */
+                // 开始上传
+                _ = Kouyu100HttpGet($"https://028.kouyu100.com/njjlzxhx/listenExam.action?examId={currentHomework.ExamId}&hwId={currentHomework.HomeworkId}");
+                _ = Kouyu100HttpGet($"https://028.kouyu100.com/njjlzxhx/gdQuickEntrance.action");
                 // 构造答案列表
                 string groupListResultString = Kouyu100HttpGet($"http://028.kouyu100.com/njjlzxhx/getListenGroupsByExamId.action?examId={currentHomework.ExamId}");
                 JArray groupList = (JArray)((JObject)JsonConvert.DeserializeObject(groupListResultString))["groupList"];
@@ -181,10 +211,11 @@ namespace CustomTools
                     }));
                 }
                 // 结束上传
-                _ = Kouyu100HttpGet($"https://028.kouyu100.com/njjlzxhx/endExamAnswer.action?examId={currentHomework.ExamId}&homeWork.id={currentHomework.HomeworkId}&listenExamScore.id={ScoreId}");
+                Kouyu100HttpGetWithoutCookie($"https://028.kouyu100.com/njjlzxhx/endExamAnswer.action?examId={currentHomework.ExamId}&homeWork.id={currentHomework.HomeworkId}&listenExamScore.id={ScoreId}");
                 // 检查结果
                 string result = Kouyu100HttpGet($"http://028.kouyu100.com/njjlzxhx/findStudentExamInfo.action?examId={currentHomework.ExamId}&hwId={currentHomework.HomeworkId}");
-                if (result!= "{\"scoreList\":[]}")
+                
+                if (result != "{\"scoreList\":[]}")
                 {
                     UploadProgressBar.Dispatcher.Invoke(delegate
                     {

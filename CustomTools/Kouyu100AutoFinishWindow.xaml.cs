@@ -93,7 +93,14 @@ namespace CustomTools
         {
             Task.Run(delegate
             {
-                List<Homework> homeworks = new List<Homework>();
+                GetHomeworkListButton.Dispatcher.BeginInvoke(new Action(delegate
+                {
+                    GetHomeworkListButton.IsEnabled = false;
+                }));
+                HomeworkListBox.Dispatcher.BeginInvoke(new Action(delegate
+                {
+                    HomeworkListBox.Items.Clear();
+                }));
                 try
                 {
                     string httpResult = Kouyu100HttpPost("http://028.kouyu100.com/njjlzxhx/findHomeWorkListAll.action", "goToPage=1&type=all&state=0");
@@ -101,32 +108,51 @@ namespace CustomTools
                     int pageNumber = (int)responseJson["totalPage"];
                     for (int i = 1; i <= pageNumber; i++)
                     {
-                        string result = Kouyu100HttpPost("http://028.kouyu100.com/njjlzxhx/findHomeWorkListAll.action", $"goToPage={i}&type=all&state=0");
-                        JObject json = (JObject)JsonConvert.DeserializeObject(httpResult);
-                        foreach (JObject j in json["info"])
+                        try
                         {
-                            string url = (string)j["url"];
-                            var splitResult1 = url.Split('=');
-                            int ExamId = int.Parse(splitResult1[1].Split('&')[0]);
-                            int HomeworkId = int.Parse(splitResult1[2]);
-                            string Content = (string)j["content"];
-                            HomeworkListBox.Dispatcher.BeginInvoke(new Action(delegate
+                            string result = Kouyu100HttpPost("http://028.kouyu100.com/njjlzxhx/findHomeWorkListAll.action", $"goToPage={i}&type=all&state=0");
+                            JObject json = (JObject)JsonConvert.DeserializeObject(result);
+                            foreach (JObject j in json["info"])
                             {
-                                HomeworkListBox.Items.Add(new Homework()
+                                string url = (string)j["url"];
+                                var splitResult1 = url.Split('=');
+                                int ExamId = int.Parse(splitResult1[1].Split('&')[0]);
+                                int HomeworkId = int.Parse(splitResult1[2]);
+                                string Content = (string)j["content"];
+                                HomeworkListBox.Dispatcher.BeginInvoke(new Action(delegate
                                 {
-                                    ExamId = ExamId,
-                                    HomeworkId = HomeworkId,
-                                    Name = Content.Split('\'')[1],
-                                    Status = (int)j["status"] == 2 ? "已完成" : "未完成"
-                                });
-                            }));
+                                    HomeworkListBox.Items.Add(new Homework()
+                                    {
+                                        ExamId = ExamId,
+                                        HomeworkId = HomeworkId,
+                                        Name = Content.Split('\'')[1],
+                                        Status = (int)j["status"] == 2 ? "已完成" : "未完成"
+                                    });
+                                }));
+                            }
+                        }
+                        catch (FormatException ex)
+                        {
+                            // 暂不支持的作业类型
+                        }
+                        catch (OverflowException ex)
+                        {
+                            // 暂不支持的作业类型
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.ToString());
                         }
                     }
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
                 }
+                GetHomeworkListButton.Dispatcher.BeginInvoke(new Action(delegate
+                {
+                    GetHomeworkListButton.IsEnabled = true;
+                }));
             });
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 #pragma warning restore CS8602 // 解引用可能出现空引用。
@@ -136,8 +162,19 @@ namespace CustomTools
         private void HomeworkListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             Kouyu100AutoFinishInnerWindow kouyu100AutoFinishInnerWindow = new Kouyu100AutoFinishInnerWindow((Homework)HomeworkListBox.SelectedItem, $"authToken={AuthTokenTextBox.Text}");
-            kouyu100AutoFinishInnerWindow.Owner = this;
-            kouyu100AutoFinishInnerWindow.ShowDialog();
+            if (kouyu100AutoFinishInnerWindow.PrepareSuccessfully)
+            {
+                kouyu100AutoFinishInnerWindow.Owner = this;
+                kouyu100AutoFinishInnerWindow.ShowDialog();
+            }
+        }
+
+        private void InnerWebbrowserLoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            Kouyu100AutoFinishInnerWindowLoginWebbrowserWindow kouyu100AutoFinishInnerWindowLoginWebbrowserWindow = new Kouyu100AutoFinishInnerWindowLoginWebbrowserWindow();
+            kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.Owner = this;
+            kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.ShowDialog();
+            AuthTokenTextBox.Text = kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.GetAuthToken();
         }
     }
 }
