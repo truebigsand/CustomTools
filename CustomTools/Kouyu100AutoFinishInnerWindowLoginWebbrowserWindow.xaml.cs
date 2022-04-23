@@ -61,29 +61,5 @@ namespace CustomTools
             }
             return authTokenLine.Split('=')[1];
         }
-
-        //private void MainWebbrowser_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    if (e.Source as Uri == null)
-        //    {
-        //        return;
-        //    }
-        //    if ((e.Source as Uri).OriginalString != "https://028.kouyu100.com/njjlzxhx/index.jsp")
-        //    {
-        //        Close();
-        //    }
-        //}
-
-        private void MainWebbrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
-        {
-            //if (e.Uri == null)
-            //{
-            //    return;
-            //}
-            if (e.Uri.OriginalString != "https://028.kouyu100.com/njjlzxhx/index.jsp")
-            {
-                Close();
-            }
-        }
     }
 }

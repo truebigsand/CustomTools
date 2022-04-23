@@ -173,6 +173,7 @@ namespace CustomTools
         {
             Kouyu100AutoFinishInnerWindowLoginWebbrowserWindow kouyu100AutoFinishInnerWindowLoginWebbrowserWindow = new Kouyu100AutoFinishInnerWindowLoginWebbrowserWindow();
             kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.Owner = this;
+            MessageBox.Show("请在接下来弹出的窗口内登录, 登陆成功后关闭即可");
             kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.ShowDialog();
             AuthTokenTextBox.Text = kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.GetAuthToken();
         }

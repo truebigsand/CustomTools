@@ -8,7 +8,7 @@
         WindowStartupLocation="CenterOwner"
         Title="Kouyu100AutoFinishInnerWindowLoginWebbrowserWindow" Height="450" Width="800">
     <Grid>
-        <WebBrowser x:Name="MainWebbrowser" Source="https://028.kouyu100.com/njjlzxhx/index.jsp" Navigated="MainWebbrowser_Navigated" />
+        <WebBrowser x:Name="MainWebbrowser" Source="https://028.kouyu100.com/njjlzxhx/index.jsp" />
 
     </Grid>
 </Window>
