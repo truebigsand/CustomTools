@@ -12,6 +12,10 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+    - name: GetReleaseVersion
+      shell: pwsh
+      run: |
+        ./Get-Version.ps1
     - name: Build
       shell: pwsh
       run: |
@@ -23,14 +27,11 @@ jobs:
       shell: pwsh
       run: |
         mkdir ./publish/zips
-        Compress-Archive -Path ./publish/win-x64-independent -DestinationPath ./publish/zips/CommonTools-win-x64-independent.zip
-        Compress-Archive -Path ./publish/win-x86-independent -DestinationPath ./publish/zips/CommonTools-win-x86-independent.zip
-        Compress-Archive -Path ./publish/win-x64-dependent -DestinationPath ./publish/zips/CommonTools-win-x64-dependent.zip
-        Compress-Archive -Path ./publish/win-x86-dependent -DestinationPath ./publish/zips/CommonTools-win-x86-dependent.zip
-    - name: GetReleaseVersion
-      shell: pwsh
-      run: |
-        ./Get-Version.ps1
+        $release_version = ${{ env.ReleaseVersion }}
+        Compress-Archive -Path ./publish/win-x64-independent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x64-independent.zip
+        Compress-Archive -Path ./publish/win-x86-independent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x86-independent.zip
+        Compress-Archive -Path ./publish/win-x64-dependent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x64-dependent.zip
+        Compress-Archive -Path ./publish/win-x86-dependent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x86-dependent.zip
     - name: Create GitHub release
       uses: marvinpinto/action-automatic-releases@latest
       with:
