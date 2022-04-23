@@ -27,11 +27,10 @@ jobs:
       shell: pwsh
       run: |
         mkdir ./publish/zips
-        $release_version = ${{ env.ReleaseVersion }}
-        Compress-Archive -Path ./publish/win-x64-independent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x64-independent.zip
-        Compress-Archive -Path ./publish/win-x86-independent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x86-independent.zip
-        Compress-Archive -Path ./publish/win-x64-dependent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x64-dependent.zip
-        Compress-Archive -Path ./publish/win-x86-dependent -DestinationPath ./publish/zips/CommonTools-$release_version-win-x86-dependent.zip
+        Compress-Archive -Path ./publish/win-x64-independent -DestinationPath ./publish/zips/CommonTools-${{ env.ReleaseVersion }}-win-x64-independent.zip
+        Compress-Archive -Path ./publish/win-x86-independent -DestinationPath ./publish/zips/CommonTools-${{ env.ReleaseVersion }}-win-x86-independent.zip
+        Compress-Archive -Path ./publish/win-x64-dependent -DestinationPath ./publish/zips/CommonTools-${{ env.ReleaseVersion }}-win-x64-dependent.zip
+        Compress-Archive -Path ./publish/win-x86-dependent -DestinationPath ./publish/zips/CommonTools-${{ env.ReleaseVersion }}-win-x86-dependent.zip
     - name: Create GitHub release
       uses: marvinpinto/action-automatic-releases@latest
       with:
