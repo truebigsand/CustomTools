@@ -16,10 +16,11 @@ namespace CustomTools
     /// </summary>
     public partial class Kouyu100AutoFinishInnerWindow : Window
     {
-        private readonly Homework currentHomework;
+        readonly Homework currentHomework;
         public bool PrepareSuccessfully = false;
-        string cookieString;
+        string cookieString, answerString = "";
         int ScoreId;
+        List<Tuple<int, int, string>> answerList = new List<Tuple<int, int, string>>();
         public Kouyu100AutoFinishInnerWindow(Homework currentHomework, string cookieString)
         {
             InitializeComponent();
@@ -31,6 +32,7 @@ namespace CustomTools
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 #pragma warning disable CS8602 // 解引用可能出现空引用。
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
+            // 获取ScoreId
             try
             {
                 ScoreId = (int)((
@@ -38,12 +40,29 @@ namespace CustomTools
                         Kouyu100HttpGet($"http://028.kouyu100.com/njjlzxhx/getTimeAndAnswer.action?examId={currentHomework.ExamId}&homeWork.id={currentHomework.HomeworkId}")
                     )
                 )["listenExamScore"]["id"]);
-                PrepareSuccessfully = true;
+                
             }
             catch(ArgumentException ex)
             {
                 MessageBox.Show("暂不支持的作业类型! ");
             }
+            PrepareSuccessfully = true;
+            // 构造答案列表
+            string groupListResultString = Kouyu100HttpGet($"http://028.kouyu100.com/njjlzxhx/getListenGroupsByExamId.action?examId={currentHomework.ExamId}");
+            JArray groupList = (JArray)((JObject)JsonConvert.DeserializeObject(groupListResultString))["groupList"];
+            StringBuilder answerStringBuilder = new StringBuilder();
+            foreach (JObject group in groupList)
+            {
+                foreach (JObject choose in (JArray)group["chooseList"])
+                {
+                    answerList.Add(new Tuple<int, int, string>((int)group["id"], (int)choose["id"], (string)choose["answers"]));
+                    answerStringBuilder.Append((string)choose["answers"]);
+                }
+                answerStringBuilder.Append(' ');
+            }
+            // 代码中修改TextBox.Text也触发TextBox.TextChanged，坑了我半天，解决方法居然只是把L64跟L65换个位置
+            answerString = answerStringBuilder.ToString().Replace(" ", "");
+            UserAnswerStringTextBox.Text = answerStringBuilder.ToString();
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
@@ -119,6 +138,39 @@ namespace CustomTools
             }
             return query.ToString().Substring(0, query.Length - 1);
         }
+
+        private void AnswerStringTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            // 更新answerList
+            string userAnswerStringWithoutSpace = UserAnswerStringTextBox.Text.Trim().Replace(" ", "");
+            for (int i = 0; i < answerList.Count; i++)
+            {
+                if (i >= userAnswerStringWithoutSpace.Length) // 用户答案串字符数量不足，退出循环
+                {
+                    break;
+                }
+                var tmp = answerList[i].ToValueTuple();
+                tmp.Item3 = userAnswerStringWithoutSpace[i].ToString();
+                answerList[i] = tmp.ToTuple();
+            }
+            // 更新Score
+            int Score = 0;
+            string normalizedAnswerString = answerString.ToLower();
+            string normalizedUserAnswerStringWithoutSpace = userAnswerStringWithoutSpace.ToLower();
+            for(int i = 0; i < normalizedAnswerString.Length; i++)
+            {
+                if (i >= normalizedUserAnswerStringWithoutSpace.Length) // 归一化后的用户答案串数量不足，退出循环
+                {
+                    break;
+                }
+                if (normalizedAnswerString[i] == normalizedUserAnswerStringWithoutSpace[i])
+                {
+                    Score++;
+                }
+            }
+            ScoreTextBlock.Text = $"分数: {Score}";
+        }
+
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             Task.Run(() =>
@@ -161,20 +213,10 @@ namespace CustomTools
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 #pragma warning disable CS8602 // 解引用可能出现空引用。
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
-                // 构造答案列表
-                string groupListResultString = Kouyu100HttpGet($"http://028.kouyu100.com/njjlzxhx/getListenGroupsByExamId.action?examId={currentHomework.ExamId}");
-                JArray groupList = (JArray)((JObject)JsonConvert.DeserializeObject(groupListResultString))["groupList"];
-                List<Tuple<int, int, string>> answerList = new List<Tuple<int, int, string>>();
-                foreach(JObject group in groupList)
-                {
-                    foreach (JObject choose in (JArray)group["chooseList"])
-                    {
-                        answerList.Add(new Tuple<int, int, string>((int)group["id"], (int)choose["id"], (string)choose["answers"]));
-                    }
-                }
+                
+                // 遍历答案列表上传答案
                 int count = 0;
                 double total = answerList.ToArray().Length;
-                // 遍历答案列表上传答案
                 foreach (Tuple<int, int, string> tuple in answerList)
                 {
                     int groupId = tuple.Item1;
@@ -191,8 +233,10 @@ namespace CustomTools
                         { "listenExamAnswer.homeWorkId", currentHomework.HomeworkId.ToString() },
                         { "listenExamScore.id", ScoreId.ToString() }
                     };
+                    string UploadSingleAnswerResult = Kouyu100HttpPost("https://028.kouyu100.com/njjlzxhx/saveSingleExamAnswer.action", DictionaryToQueryString(data));
+                    //MessageBox.Show(UploadSingleAnswerResult);
                     // 上传单个答案并检查
-                    if (Kouyu100HttpPost("https://028.kouyu100.com/njjlzxhx/saveSingleExamAnswer.action", DictionaryToQueryString(data)) != "1.0")
+                    if (UploadSingleAnswerResult != "1.0" && UploadSingleAnswerResult != "0.0") // 1.0正确, 0.0错误
                     {
                         throw new WebException("上传单个答案API调用错误! ");
                     }
