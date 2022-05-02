@@ -11,8 +11,11 @@
         <TextBlock x:Name="HomeworkTitleTextBlock" Margin="10,10,0,0" TextWrapping="Wrap" Text="标题: " HorizontalAlignment="Left" VerticalAlignment="Top"/>
         <TextBlock x:Name="ExamIdTextBlock" HorizontalAlignment="Left" Margin="10,30,0,0" TextWrapping="Wrap" Text="ExamId: " VerticalAlignment="Top"/>
         <TextBlock x:Name="HomeworkIdTextBlock" HorizontalAlignment="Left" Margin="10,50,0,0" TextWrapping="Wrap" Text="HwId: " VerticalAlignment="Top"/>
-        <Button x:Name="StartButton" Content="一键开摆" HorizontalAlignment="Center" Margin="0,27,0,0" VerticalAlignment="Top" Click="StartButton_Click"/>
-        <TextBlock HorizontalAlignment="Left" Margin="269,10,0,0" TextWrapping="Wrap" Text="摆烂进度: " VerticalAlignment="Top"/>
-        <ProgressBar x:Name="UploadProgressBar" HorizontalAlignment="Left" Height="12" Margin="328,10,0,0" VerticalAlignment="Top" Width="200"/>
+        <Button x:Name="StartButton" Content="一键开摆" HorizontalAlignment="Center" Margin="0,50,0,0" VerticalAlignment="Top" Click="StartButton_Click"/>
+        <TextBlock HorizontalAlignment="Left" Margin="269,33,0,0" TextWrapping="Wrap" Text="摆烂进度: " VerticalAlignment="Top"/>
+        <ProgressBar x:Name="UploadProgressBar" HorizontalAlignment="Left" Height="12" Margin="328,33,0,0" VerticalAlignment="Top" Width="200"/>
+        <TextBox x:Name="UserAnswerStringTextBox" HorizontalAlignment="Left" Margin="304,6,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="189" Cursor="Arrow" TextChanged="AnswerStringTextBox_TextChanged"/>
+        <TextBlock HorizontalAlignment="Left" Margin="269,10,0,0" TextWrapping="Wrap" Text="答案: " VerticalAlignment="Top"/>
+        <TextBlock x:Name="ScoreTextBlock" HorizontalAlignment="Left" Margin="498,10,0,0" TextWrapping="Wrap" Text="分数: " VerticalAlignment="Top"/>
     </Grid>
 </Window>
