@@ -15,9 +15,12 @@
         TextElement.FontSize="14"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button x:Name="SchoolDataButton" Content="信息课数据" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="SchoolDataButtonClick"/>
-        <Button x:Name="Kouyu100Button" Content="口语100一键开摆" HorizontalAlignment="Left" Margin="130,10,0,0" VerticalAlignment="Top" Cursor="Hand" Click="Kouyu100Button_Click"/>
+	<Grid>
+		<Button x:Name="SchoolDataButton" Content="信息课数据" HorizontalAlignment="Left" Margin="10,75,0,0" VerticalAlignment="Top" Click="SchoolDataButtonClick"/>
+		<Button x:Name="Kouyu100Button" Content="口语100一键开摆" HorizontalAlignment="Left" Margin="134,75,0,0" VerticalAlignment="Top" Cursor="Hand" Click="Kouyu100Button_Click"/>
+		<Grid HorizontalAlignment="Left" Height="45" Margin="10,10,0,0" VerticalAlignment="Top" Width="770">
+			<Label Content="Custom Tools" HorizontalAlignment="Left" Height="30" Margin="10,0,0,0" VerticalAlignment="Center" Width="130" FontSize="16"/>
+		</Grid>
 
-    </Grid>
+	</Grid>
 </Window>

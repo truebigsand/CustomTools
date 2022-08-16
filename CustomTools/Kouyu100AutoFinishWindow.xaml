@@ -7,40 +7,46 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Title="Kouyu100" Height="450" Width="800">
-    <Grid>
-        <TextBlock HorizontalAlignment="Left" Margin="10,18,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="authToken(从网页Cookies中取得): "/>
-        <TextBox x:Name="AuthTokenTextBox" HorizontalAlignment="Left" Margin="208,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="358" Cursor="Arrow"/>
-        <Button x:Name="GetHomeworkListButton" Content="获取作业列表" Margin="664,10,5,0" VerticalAlignment="Top" Click="GetHomeworkListButton_Click" Background="#FF2196F3"/>
-        <ListBox x:Name="HomeworkListBox" Margin="10,47,10,10" HorizontalContentAlignment="Stretch">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Text="{Binding Name}"></TextBlock>
-                        <TextBlock Grid.Column="1" Text="{Binding Status}" Foreground="{DynamicResource MaterialDesignLightForeground}">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Background" Value="#FFA7FFA7"></Setter>
-                                    <Style.Triggers>
-                                        <Trigger Property="Text" Value="未完成">
-                                            <Setter Property="Background" Value="#FFFF2649"></Setter>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
-                    <EventSetter Event="MouseDoubleClick" Handler="HomeworkListBoxItem_MouseDoubleClick"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
-        </ListBox>
-        <Button x:Name="InnerWebbrowserLoginButton" Content="内置登录" HorizontalAlignment="Left" Margin="571,10,0,0" VerticalAlignment="Top" Click="InnerWebbrowserLoginButton_Click" Cursor="Hand"/>
-    </Grid>
+	<Grid>
+		<TextBlock HorizontalAlignment="Left" Margin="10,63,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="authToken(从网页Cookies中取得): " Height="20" Width="190" RenderTransformOrigin="0.5,-0.212"/>
+		<TextBox  x:Name="AuthTokenTextBox" InputMethod.IsInputMethodEnabled="True" HorizontalAlignment="Left" Margin="203,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="330" Cursor="Arrow"/>
+		<Button  x:Name="GetHomeworkListButton" IsEnabled="False" Opacity="0.5" Content="获取作业列表" Margin="650,50,10,0" VerticalAlignment="Top" Click="GetHomeworkListButton_Click" Background="#FF2196F3" Cursor="Hand"/>
+		<ListBox x:Name="HomeworkListBox" Margin="10,88,10,10" HorizontalContentAlignment="Stretch" >
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"></ColumnDefinition>
+							<ColumnDefinition Width="Auto"></ColumnDefinition>
+						</Grid.ColumnDefinitions>
+						<TextBlock Grid.Column="0" Text="{Binding Name}"></TextBlock>
+						<TextBlock Grid.Column="1" Text="{Binding Status}" Foreground="{DynamicResource MaterialDesignLightForeground}">
+							<TextBlock.Style>
+								<Style TargetType="TextBlock">
+									<Setter Property="Background" Value="#FFA7FFA7"></Setter>
+									<Style.Triggers>
+										<Trigger Property="Text" Value="未完成">
+											<Setter Property="Background" Value="#FFFF2649"></Setter>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</TextBlock.Style>
+						</TextBlock>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+			<ListBox.ItemContainerStyle>
+				<Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+					<EventSetter Event="MouseDoubleClick" Handler="HomeworkListBoxItem_MouseDoubleClick"/>
+				</Style>
+			</ListBox.ItemContainerStyle>
+			<Button Content="Button"/>
+		</ListBox>
+		<Button x:Name="InnerWebbrowserLoginButton" Content="内置登录" HorizontalAlignment="Left" Margin="551,51,0,0" VerticalAlignment="Top" Click="InnerWebbrowserLoginButton_Click" Cursor="Hand" Height="31" Width="94" RenderTransformOrigin="0.585,-0.75"/>
+		<Grid HorizontalAlignment="Center" Height="35" Margin="0,10,0,0" VerticalAlignment="Top" Width="780" Cursor="Hand">
+			<Label Content="口语100一键开摆" HorizontalAlignment="Left" Height="25" Margin="0,10,0,0" VerticalAlignment="Top" Width="210" Background="White" Foreground="#DD100000"/>
+
+			<Button x:Name="Clear_state"  Content="清除" Margin="670,2,10,1" Background="#FF2196F3" Cursor="Hand" Click="Clear_state_Click"/>
+		</Grid>
+	</Grid>
 </Window>
