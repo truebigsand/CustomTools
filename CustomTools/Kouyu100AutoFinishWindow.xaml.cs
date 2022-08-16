@@ -89,8 +89,10 @@ namespace CustomTools
 #pragma warning disable CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 #pragma warning disable CS8602 // 解引用可能出现空引用。
 #pragma warning disable CS8604 // 引用类型参数可能为 null。
+        static bool isOver = true;
         private void GetHomeworkListButton_Click(object sender, RoutedEventArgs e)
         {
+            isOver = false;
             Task.Run(delegate
             {
                 GetHomeworkListButton.Dispatcher.BeginInvoke(new Action(delegate
@@ -153,7 +155,9 @@ namespace CustomTools
                 {
                     GetHomeworkListButton.IsEnabled = true;
                 }));
+
             });
+            isOver = true;
 #pragma warning restore CS8600 // 将 null 字面量或可能为 null 的值转换为非 null 类型。
 #pragma warning restore CS8602 // 解引用可能出现空引用。
 #pragma warning restore CS8604 // 引用类型参数可能为 null。
@@ -176,6 +180,34 @@ namespace CustomTools
             MessageBox.Show("请在接下来弹出的窗口内登录, 登陆成功后关闭即可");
             kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.ShowDialog();
             AuthTokenTextBox.Text = kouyu100AutoFinishInnerWindowLoginWebbrowserWindow.GetAuthToken();
+            if (AuthTokenTextBox.Text != "")
+            {
+                AuthTokenTextBox.IsEnabled = false;
+                GetHomeworkListButton.IsEnabled = true;
+                GetHomeworkListButton.Opacity = 1;
+            }
+        }
+
+        private void Clear_state_Click(object sender, RoutedEventArgs e)
+        {
+            if (isOver)
+            {
+                AuthTokenTextBox.IsEnabled = true;
+                GetHomeworkListButton.IsEnabled = false;
+                GetHomeworkListButton.Opacity = 0.5;
+                for (int index = 0; index < 10; index++)
+                {
+                    for (int i = 0; i < HomeworkListBox.Items.Count; i++)
+                    {
+                        HomeworkListBox.Items.RemoveAt(i);
+                    }
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("正在读取中，无法关闭");
+            }
         }
     }
 }
